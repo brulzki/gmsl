@@ -62,10 +62,16 @@ endif
 # Returns:   $(true) if this version of the library is compatible
 #            with the requested version number, otherwise $(false)
 # ----------------------------------------------------------------------------
-gmsl_compatible = $(if $(call gt,$(word 1,$1),$(word 1,$(gmsl_version))),    \
-                      $(false),                                              \
-                      $(if $(call lt,$(word 1,$1),$(word 1,$(gmsl_version))),\
-                          $(true),                                           
+gmsl_compatible =                                                         \
+    $(if $(call gt,$(word 1,$1),$(word 1,$(gmsl_version))),               \
+        $(false),                                                         \
+        $(if $(call lt,$(word 1,$1),$(word 1,$(gmsl_version))),           \
+            $(true),                                                      \
+            $(if $(call gt,$(word 2,$1),$(word 2,$(gmsl_version))),       \
+                $(false),                                                 \
+                $(if $(call lt,$(word 2,$1),$(word 2,$(gmsl_version))),   \
+                    $(true),                                              \
+                    $(call lte,$(word 3,$1),$(word 3,$(gmsl_version)))))))
 
 # ###########################################################################
 # LIST MANIPULATION FUNCTIONS
@@ -235,8 +241,6 @@ uc = $(__gmsl_tr1)$(call tr,$([a-z]),$([A-Z]),$1)
 # ----------------------------------------------------------------------------
 lc = $(__gmsl_tr1)$(call tr,$([A-Z]),$([a-z]),$1)
 endif # __gmsl_have_eval
-
-in_string = # TODO
 
 # ###########################################################################
 # ARITHMETIC LIBRARY
@@ -548,11 +552,7 @@ ifdef __gmsl_have_eval
 #               a space)
 # Returns:   None
 # ----------------------------------------------------------------------------
-push = $(__gmsl_tr2)$(if $(call in_string, ,$1),                      \
-           $(call __gmsl_error,Stack elements cannot contain spaces), \
-           $(eval __gmsl_stack_$1 := $2 $(__gmsl_stack_$1)))
-
-# TODO test for pushing a value with a space
+push = $(__gmsl_tr2)$(eval __gmsl_stack_$1 := $2 $(__gmsl_stack_$1))
 
 # ----------------------------------------------------------------------------
 # Function:  pop

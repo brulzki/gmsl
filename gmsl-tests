@@ -453,3 +453,13 @@ $(call test_assert,$(call int_ne,$(call int_encode,2),$(call int_encode,3)),$(tr
 $(call test_assert,$(call int_ne,$(call int_encode,3),$(call int_encode,2)),$(true))
 $(call test_assert,$(call int_ne,$(call int_encode,2),$(call int_encode,2)),)
 $(call stop_test)
+
+$(call start_test,gmsl_compatible)
+$(call test_assert,$(call gmsl_compatible,$(gmsl_version)),$(true))
+$(call test_assert,$(call gmsl_compatible,0 9 0),$(true))
+$(call test_assert,$(call gmsl_compatible,0 0 1),$(true))
+$(call test_assert,$(call gmsl_compatible,0 0 0),$(true))
+$(call test_assert,$(call gmsl_compatible,2 0 0),)
+$(call test_assert,$(call gmsl_compatible,1 1 0),)
+$(call test_assert,$(call gmsl_compatible,1 0 2),)
+$(call stop_test)
