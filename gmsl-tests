@@ -4,7 +4,7 @@
 #
 # Test suite for the GMSL
 #
-# Copyright (c) 2005 John Graham_Cumming
+# Copyright (c) 2005 John Graham-Cumming
 #
 #   This file is part of GMSL
 #
@@ -93,10 +93,15 @@ $(call stop_test)
 
 $(call start_test,seq)
 $(call test_assert,$(call seq,abc,abc),T)
+$(call test_assert,$(call seq,a%c,abc),)
+$(call test_assert,$(call seq,abc,a%c),)
 $(call test_assert,$(call seq,abc,ABC),)
 $(call test_assert,$(call seq,abc,),)
 $(call test_assert,$(call seq,,),T)
 $(call test_assert,$(call seq,a b c,a b c),T)
+$(call test_assert,$(call seq,aa% bb% cc,aa% bb% cc),T)
+$(call test_assert,$(call seq,aa% bb% cc,aa% bb cc),)
+$(call test_assert,$(call seq,aa% bb% cc,xx yy zz),)
 $(call stop_test)
 
 $(call start_test,sne)
@@ -105,6 +110,8 @@ $(call test_assert,$(call sne,abc,ABC),T)
 $(call test_assert,$(call sne,abc,),T)
 $(call test_assert,$(call sne,,),)
 $(call test_assert,$(call sne,a b c,a b c),)
+$(call test_assert,$(call sne,aa% bb% cc,aa% bb% cc),)
+$(call test_assert,$(call sne,aa% bb% cc,aa% bb cc),T)
 $(call stop_test)
 
 $(call start_test,lc)

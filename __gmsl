@@ -28,7 +28,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 0
+gmsl_version := 1 0 1
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -167,13 +167,18 @@ length = $(__gmsl_tr1)$(words $1)
 # STRING MANIPULATION FUNCTIONS
 # ###########################################################################
 
+# Helper function that translates any GNU Make 'true' value (i.e. a
+# non-empty string) to our $(true)
+
+__gmsl_make_bool = $(if $(strip $1),$(true),$(false))
+
 # ----------------------------------------------------------------------------
 # Function:  seq
 # Arguments: 1: A string to compare against...
 #            2: ...this string
 # Returns:   Returns $(true) if the two strings are identical
 # ----------------------------------------------------------------------------
-seq = $(__gmsl_tr2)$(subst $1,$(true),$(filter $1,$2))
+seq = $(__gmsl_tr2)$(if $(subst x$1,,x$2),$(false),$(true))
 
 # ----------------------------------------------------------------------------
 # Function:  sne
@@ -211,12 +216,12 @@ ifdef __gmsl_have_eval
 #            3: The text to translate
 # Returns:   Returns the text after translating characters
 # ----------------------------------------------------------------------------
-tr = $(__gmsl_tr3)$(eval __gmsl_t := $3)                                  \
+tr = $(__gmsl_tr3)$(strip $(eval __gmsl_t := $3)                          \
      $(foreach c,                                                         \
          $(join $(addsuffix :,$1),$2),                                    \
          $(eval __gmsl_t :=                                               \
              $(subst $(word 1,$(subst :, ,$c)),$(word 2,$(subst :, ,$c)), \
-                 $(__gmsl_t))))$(__gmsl_t)
+                 $(__gmsl_t))))$(__gmsl_t))
 
 # Common character classes for use with the tr function.  Each of
 # these is actually a variable declaration and must be wrapped with
@@ -383,11 +388,6 @@ int_min = $(__gmsl_tr2)$(subst xx,x,$(filter xx,$(join $1,$2)))
 # ----------------------------------------------------------------------------
 max = $(__gmsl_tr2)$(call __gmsl_int_wrap,int_max,$1,$2)
 min = $(__gmsl_tr2)$(call __gmsl_int_wrap,int_min,$1,$2)
-
-# Helper function that translates any GNU Make 'true' value (i.e. a
-# non-empty string) to our $(true)
-
-__gmsl_make_bool = $(if $(strip $1),$(true),$(false))
 
 # ----------------------------------------------------------------------------
 # Function: int_gt, int_gte, int_lt, int_lte, int_eq, int_ne
