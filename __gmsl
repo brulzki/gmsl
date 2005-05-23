@@ -599,6 +599,10 @@ ifdef GMSL_TRACE
 __gmsl_tr1 = $(warning $0('$1'))
 __gmsl_tr2 = $(warning $0('$1','$2'))
 __gmsl_tr3 = $(warning $0('$1','$2','$3'))
+else
+__gmsl_tr1 :=
+__gmsl_tr2 :=
+__gmsl_tr3 :=
 endif
 
 # ----------------------------------------------------------------------------
