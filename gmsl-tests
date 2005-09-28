@@ -278,6 +278,15 @@ $(call test_assert,$(call reverse,1 2),2 1)
 $(call test_assert,$(call reverse,1 2 3),3 2 1)
 $(call stop_test)
 
+$(call start_test,uniq)
+$(call test_assert,$(call uniq,),)
+$(call test_assert,$(call uniq,a),a)
+$(call test_assert,$(call uniq,a a),a)
+$(call test_assert,$(call uniq,a aa),a aa)
+$(call test_assert,$(call uniq,a aa a),a aa)
+$(call test_assert,$(call uniq,a b ba ab b a a ba a),a b ba ab)
+$(call stop_test)
+
 c:=,
 $(call start_test,split)
 $(call test_assert,$(call split,$c,comma$cseparated$cstring),comma separated string)

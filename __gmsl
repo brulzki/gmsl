@@ -157,6 +157,13 @@ lne = $(__gmsl_tr2)$(call not,$(call leq,$1,$2))
 reverse =$(__gmsl_tr1)$(if $1,$(call reverse,$(call rest,$1)) $(call first,$1))
 
 # ----------------------------------------------------------------------------
+# Function:  uniq
+# Arguments: 1: A list from which to remove repeated elements
+# Returns:   The list with duplicate elements removed without reordering
+# ----------------------------------------------------------------------------
+uniq = $(__gmsl_tr1)$(if $1,$(call uniq,$(call chop,$1)) $(if $(filter $(call last,$1),$(call chop,$1)),,$(call last,$1)))
+
+# ----------------------------------------------------------------------------
 # Function:  length
 # Arguments: 1: A list
 # Returns:   The number of elements in the list
