@@ -205,6 +205,64 @@ Returns:&nbsp;&nbsp;&nbsp;Returns the text in upper case<br>
 Returns:&nbsp;&nbsp;&nbsp;Returns the text in lower case<br>
 </span>
 <hr style="width: 100%; height: 2px;"><span style="font-family: monospace;"></span>
+<h2>Set Manipulation Functions</h2>
+Sets are represented by sorted, deduplicated lists.  To create a set
+from a list use <span style="font-family:
+monospace;">set_create</span>, or start with the <span
+style="font-family: monospace;">empty_set</span> and <span
+style="font-family: monospace;">set_insert</span> individual elements.
+The empty set is defined as <span style="font-family:
+monospace;">empty_set</span>.<p>
+
+<hr><b>set_create</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A list of set elements<br>
+Returns:&nbsp;&nbsp;&nbsp;Returns the newly created set<br>
+</span>
+
+<hr><b>set_insert</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A single element to add to a set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2: A set<br>
+Returns:&nbsp;&nbsp;&nbsp;Returns the set with the element added<br>
+</span>
+
+<hr><b>set_is_member</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A single element<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2: A set<br>
+Returns:&nbsp;&nbsp;&nbsp;Returns $(true) if the element is in the set<br>
+</span>
+
+<hr><b>set_union</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2: Another set<br>
+Returns:&nbsp;&nbsp;&nbsp;Returns the union of the two sets<br>
+</span>
+
+<hr><b>set_intersection</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2: Another set<br>
+Returns:&nbsp;&nbsp;&nbsp;Returns the intersection of the two sets<br>
+</span>
+
+<hr><b>set_is_subset</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2: Another set<br>
+Returns:&nbsp;&nbsp;&nbsp;Returns $(true) if the first set is a subset of the second<br>
+</span>
+
+<hr><b>set_equal</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2: Another set<br>
+Returns:&nbsp;&nbsp;&nbsp;Returns $(true) if the two sets are identical<br>
+</span>
+
+<hr style="width: 100%; height: 2px;"><span style="font-family: monospace;"></span>
 <h2>Integer Arithmetic Functions</h2>
 Integers are represented by lists with the equivalent number of
 x's.&nbsp; For example the number 4 is x x x x.&nbsp; The maximum

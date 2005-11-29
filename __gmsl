@@ -28,7 +28,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 2
+gmsl_version := 1 0 3
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -301,6 +301,72 @@ uc = $(__gmsl_tr1)$(call tr,$([a-z]),$([A-Z]),$1)
 # ----------------------------------------------------------------------------
 lc = $(__gmsl_tr1)$(call tr,$([A-Z]),$([a-z]),$1)
 endif # __gmsl_have_eval
+
+# ###########################################################################
+# SET MANIPULATION FUNCTIONS
+# ###########################################################################
+
+# Sets are represented by sorted, deduplicated lists.  To create a set
+# from a list use set_create, or start with the empty_set and
+# set_insert individual elements
+
+# This is the empty set
+empty_set := 
+
+# ----------------------------------------------------------------------------
+# Function:  set_create
+# Arguments: 1: A list of set elements
+# Returns:   Returns the newly created set
+# ----------------------------------------------------------------------------
+set_create = $(__gmsl_tr1)$(sort $1)
+
+# ----------------------------------------------------------------------------
+# Function:  set_insert
+# Arguments: 1: A single element to add to a set
+#            2: A set
+# Returns:   Returns the set with the element added
+# ----------------------------------------------------------------------------
+set_insert = $(__gmsl_tr2)$(sort $1 $2)
+
+# ----------------------------------------------------------------------------
+# Function:  set_is_member
+# Arguments: 1: A single element 
+#            2: A set
+# Returns:   Returns $(true) if the element is in the set
+# ----------------------------------------------------------------------------
+set_is_member = $(if $(filter $1,$2),$(true),$(false))
+
+# ----------------------------------------------------------------------------
+# Function:  set_union
+# Arguments: 1: A set
+#            2: Another set
+# Returns:   Returns the union of the two sets
+# ----------------------------------------------------------------------------
+set_union = $(sort $1 $2)
+
+# ----------------------------------------------------------------------------
+# Function:  set_intersection
+# Arguments: 1: A set
+#            2: Another set
+# Returns:   Returns the intersection of the two sets
+# ----------------------------------------------------------------------------
+set_intersection = $(filter $1,$2)
+
+# ----------------------------------------------------------------------------
+# Function:  set_is_subset
+# Arguments: 1: A set
+#            2: Another set
+# Returns:   Returns $(true) if the first set is a subset of the second
+# ----------------------------------------------------------------------------
+set_is_subset = $(call set_equal,$(call set_intersection,$1,$2),$1)
+
+# ----------------------------------------------------------------------------
+# Function:  set_equal
+# Arguments: 1: A set
+#            2: Another set
+# Returns:   Returns $(true) if the two sets are identical
+# ----------------------------------------------------------------------------
+set_equal = $(call seq,$1,$2)
 
 # ###########################################################################
 # ARITHMETIC LIBRARY
