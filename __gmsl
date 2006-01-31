@@ -28,7 +28,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 3
+gmsl_version := 1 0 4
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -327,6 +327,14 @@ set_create = $(__gmsl_tr1)$(sort $1)
 # Returns:   Returns the set with the element added
 # ----------------------------------------------------------------------------
 set_insert = $(__gmsl_tr2)$(sort $1 $2)
+
+# ----------------------------------------------------------------------------
+# Function:  set_remove
+# Arguments: 1: A single element to remove from a set
+#            2: A set
+# Returns:   Returns the set with the element removed
+# ----------------------------------------------------------------------------
+set_remove = $(__gmsl_tr2)$(filter-out $1,$2)
 
 # ----------------------------------------------------------------------------
 # Function:  set_is_member
