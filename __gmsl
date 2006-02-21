@@ -45,6 +45,19 @@ ifdef GMSL_NO_ERRORS
 __gmsl_error :=
 endif
 
+# If GMSL_TRACE is enabled then calls to the library functions are
+# traced to stdout using warning messages with their arguments
+
+ifdef GMSL_TRACE
+__gmsl_tr1 = $(warning $0('$1'))
+__gmsl_tr2 = $(warning $0('$1','$2'))
+__gmsl_tr3 = $(warning $0('$1','$2','$3'))
+else
+__gmsl_tr1 :=
+__gmsl_tr2 :=
+__gmsl_tr3 :=
+endif
+
 # Figure out whether we have $(eval) or not (GNU Make 3.80 and above)
 # if we do not then output a warning message, if we do then some
 # functions will be enabled.
@@ -720,19 +733,6 @@ endif # __gmsl_have_eval
 #            the SHELL variable
 # ----------------------------------------------------------------------------
 gmsl-print-%: ; @echo $* = $($*)
-
-# If GMSL_TRACE is enabled then calls to the library functions are
-# traced to stdout using warning messages with their arguments
-
-ifdef GMSL_TRACE
-__gmsl_tr1 = $(warning $0('$1'))
-__gmsl_tr2 = $(warning $0('$1','$2'))
-__gmsl_tr3 = $(warning $0('$1','$2','$3'))
-else
-__gmsl_tr1 :=
-__gmsl_tr2 :=
-__gmsl_tr3 :=
-endif
 
 # ----------------------------------------------------------------------------
 # Function:  assert
