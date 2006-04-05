@@ -42,7 +42,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 4
+gmsl_version := 1 0 5
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -79,9 +79,20 @@ endif
 __gmsl_have_eval := $(false)
 __gmsl_ignore := $(eval __gmsl_have_eval := $(true))
 
+# See if we have $(lastword) (GNU Make 3.81 and above)
+
+__gmsl_have_lastword := $(lastword $(false) $(true))
+
+# See if we have native or and and (GNU Make 3.81 and above)
+
+__gmsl_have_or := $(or $(true),$(false))
+__gmsl_have_and := $(and $(true),$(true))
+
 ifndef __gmsl_have_eval
 $(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$(eval): some functions disabled)
 endif
+
+$(warning $(__gmsl_have_or) $(__gmsl_have_and) $(__gmsl_have_lastword))
 
 # ----------------------------------------------------------------------------
 # Function:  gmsl_compatible
@@ -111,14 +122,18 @@ gmsl_compatible =                                                         \
 # Arguments: Two boolean values
 # Returns:   Returns $(true) if both of the booleans are true
 # ----------------------------------------------------------------------------
+ifndef __gmsl_have_and
 and = $(__gmsl_tr2)$(if $1,$(if $2,$(true),$(false)),$(false))
+endif
 
 # ----------------------------------------------------------------------------
 # Function:  or
 # Arguments: Two boolean values
 # Returns:   Returns $(true) if either of the booleans is true
 # ----------------------------------------------------------------------------
+ifndef __gmsl_have_or
 or = $(__gmsl_tr2)$(if $1$2,$(true),$(false))
+endif
 
 # ----------------------------------------------------------------------------
 # Function:  xor
@@ -164,7 +179,11 @@ first = $(__gmsl_tr1)$(firstword $1)
 # Arguments: 1: A list
 # Returns:   Returns the last element of a list
 # ----------------------------------------------------------------------------
+ifdef __gmsl_have_lastword
+last = $(__gmsl_tr1)$(lastword $1)
+else
 last = $(__gmsl_tr1)$(if $1,$(word $(words $1),$1))
+endif
 
 # ----------------------------------------------------------------------------
 # Function:  rest (same as LISP's cdr, or tail)
