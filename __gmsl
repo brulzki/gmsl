@@ -92,8 +92,6 @@ ifndef __gmsl_have_eval
 $(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$(eval): some functions disabled)
 endif
 
-$(warning $(__gmsl_have_or) $(__gmsl_have_and) $(__gmsl_have_lastword))
-
 # ----------------------------------------------------------------------------
 # Function:  gmsl_compatible
 # Arguments: List containing the desired library version number (maj min rev)
