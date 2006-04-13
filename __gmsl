@@ -88,7 +88,7 @@ __gmsl_have_lastword := $(lastword $(false) $(true))
 __gmsl_have_or := $(or $(true),$(false))
 __gmsl_have_and := $(and $(true),$(true))
 
-ifndef __gmsl_have_eval
+ifneq ($(__gmsl_have_eval),$(true))
 $(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$(eval): some functions disabled)
 endif
 
@@ -120,7 +120,7 @@ gmsl_compatible =                                                         \
 # Arguments: Two boolean values
 # Returns:   Returns $(true) if both of the booleans are true
 # ----------------------------------------------------------------------------
-ifndef __gmsl_have_and
+ifneq ($(__gmsl_have_and),$(true))
 and = $(__gmsl_tr2)$(if $1,$(if $2,$(true),$(false)),$(false))
 endif
 
@@ -129,7 +129,7 @@ endif
 # Arguments: Two boolean values
 # Returns:   Returns $(true) if either of the booleans is true
 # ----------------------------------------------------------------------------
-ifndef __gmsl_have_or
+ifneq ($(__gmsl_have_or),$(true))
 or = $(__gmsl_tr2)$(if $1$2,$(true),$(false))
 endif
 
@@ -177,7 +177,7 @@ first = $(__gmsl_tr1)$(firstword $1)
 # Arguments: 1: A list
 # Returns:   Returns the last element of a list
 # ----------------------------------------------------------------------------
-ifdef __gmsl_have_lastword
+ifeq ($(__gmsl_have_lastword),$(true))
 last = $(__gmsl_tr1)$(lastword $1)
 else
 last = $(__gmsl_tr1)$(if $1,$(word $(words $1),$1))
