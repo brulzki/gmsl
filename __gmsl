@@ -42,7 +42,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 5
+gmsl_version := 1 0 7
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -429,7 +429,7 @@ set_equal = $(call seq,$1,$2)
 # library can handle as _input_ is __gmsl_input_int which is defined
 # here as 65536
 
-__gmsl_sixteen := x x x x x x x x x x x x x x x
+__gmsl_sixteen := x x x x x x x x x x x x x x x x
 __gmsl_input_int := $(foreach a,$(__gmsl_sixteen),         \
                         $(foreach b,$(__gmsl_sixteen),     \
                             $(foreach c,$(__gmsl_sixteen), \
