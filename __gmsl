@@ -5,7 +5,7 @@
 # A library of functions to be used with GNU Make's $(call) that
 # provides functionality not available in standard GNU Make.
 #
-# Copyright (c) 2005-2006 John Graham-Cumming
+# Copyright (c) 2005-2007 John Graham-Cumming
 #
 # This file is part of GMSL
 #
@@ -42,7 +42,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 7
+gmsl_version := 1 0 8
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -344,6 +344,25 @@ uc = $(__gmsl_tr1)$(call tr,$([a-z]),$([A-Z]),$1)
 # Returns:   Returns the text in lower case
 # ----------------------------------------------------------------------------
 lc = $(__gmsl_tr1)$(call tr,$([A-Z]),$([a-z]),$1)
+
+# ----------------------------------------------------------------------------
+# Function:  strlen
+# Arguments: 1: A string
+# Returns:   Returns the length of the string
+# ----------------------------------------------------------------------------
+__gmsl_characters := A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+__gmsl_characters += a b c d e f g h i j k l m n o p q r s t u v w y z
+__gmsl_characters += 0 1 2 3 4 5 6 7 8 9
+__gmsl_characters += ` ~ ! @ \# $ % ^ & * ( ) - _ = +
+__gmsl_characters += { } [ ] \ : ; ' " < > , . / ? |
+
+# This results in __gmsl_space containing just a space
+
+__gmsl_space := 
+__gmsl_space +=
+
+strlen = $(strip $(eval __temp := $(subst $(__gmsl_space),x,$1))$(foreach a,$(__gmsl_characters),$(eval __temp := $$(subst $$a,x,$(__temp))))$(eval __temp := $(subst x,x ,$(__temp)))$(words $(__temp)))
+
 endif # __gmsl_have_eval
 
 # ###########################################################################

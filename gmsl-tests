@@ -4,7 +4,7 @@
 #
 # Test suite for the GMSL
 #
-# Copyright (c) 2005-2006 John Graham-Cumming
+# Copyright (c) 2005-2007 John Graham-Cumming
 #
 # This file is part of GMSL
 #
@@ -174,6 +174,17 @@ $(call test_assert,$(call sne,,),)
 $(call test_assert,$(call sne,a b c,a b c),)
 $(call test_assert,$(call sne,aa% bb% cc,aa% bb% cc),)
 $(call test_assert,$(call sne,aa% bb% cc,aa% bb cc),T)
+$(call stop_test)
+
+$(call start_test,strlen)
+$(call test_assert,$(call strlen,),0)
+$(call test_assert,$(call strlen,a),1)
+$(call test_assert,$(call strlen,a b),3)
+$(call test_assert,$(call strlen,a ),2)
+$(call test_assert,$(call strlen, a),2)
+$(call test_assert,$(call strlen,  ),2)
+$(call test_assert,$(call strlen,   ),3)
+$(call test_assert,$(call strlen,    ),4)
 $(call stop_test)
 
 $(call start_test,lc)
@@ -609,5 +620,5 @@ $(call test_assert,$(call gmsl_compatible,0 0 0),$(true))
 $(call test_assert,$(call gmsl_compatible,2 0 0),)
 $(call test_assert,$(call gmsl_compatible,1 1 0),)
 $(call test_assert,$(call gmsl_compatible,1 0 2),$(true))
-$(call test_assert,$(call gmsl_compatible,1 0 8),)
+$(call test_assert,$(call gmsl_compatible,1 0 9),)
 $(call stop_test)
