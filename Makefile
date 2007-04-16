@@ -7,5 +7,5 @@ gmsl.tar.gz: gmsl __gmsl gmsl-tests README index.html
 
 .PHONY: test
 test:
-	@$(MAKE) -f gmsl-tests
+	@$(MAKE) --warn-undefined-variables -f gmsl-tests
 

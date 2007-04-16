@@ -85,8 +85,10 @@ __gmsl_have_lastword := $(lastword $(false) $(true))
 
 # See if we have native or and and (GNU Make 3.81 and above)
 
-__gmsl_have_or := $(or $(true),$(false))
-__gmsl_have_and := $(and $(true),$(true))
+__gmsl_have_or := $(if $(filter-out undefined,  \
+    $(origin or)),$(call or,$(true),$(false)))
+__gmsl_have_and := $(if $(filter-out undefined, \
+    $(origin and)),$(call and,$(true),$(true)))
 
 ifneq ($(__gmsl_have_eval),$(true))
 $(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$(eval): some functions disabled)
@@ -353,7 +355,7 @@ lc = $(__gmsl_tr1)$(call tr,$([A-Z]),$([a-z]),$1)
 __gmsl_characters := A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
 __gmsl_characters += a b c d e f g h i j k l m n o p q r s t u v w y z
 __gmsl_characters += 0 1 2 3 4 5 6 7 8 9
-__gmsl_characters += ` ~ ! @ \# $ % ^ & * ( ) - _ = +
+__gmsl_characters += ` ~ ! @ \# $$ % ^ & * ( ) - _ = +
 __gmsl_characters += { } [ ] \ : ; ' " < > , . / ? |
 
 # This results in __gmsl_space containing just a space
@@ -712,7 +714,8 @@ set = $(__gmsl_tr3)$(eval __gmsl_aa_$1_$2 = $3)
 #            2: The key to retrieve
 # Returns:   The value stored in the array for that key
 # ----------------------------------------------------------------------------
-get = $(__gmsl_tr2)$(__gmsl_aa_$1_$2)
+get = $(__gmsl_tr2)$(if $(filter-out undefined,$(origin __gmsl_aa_$1_$2)), \
+    $(__gmsl_aa_$1_$2))
 
 # ----------------------------------------------------------------------------
 # Function:  keys
@@ -744,15 +747,17 @@ ifdef __gmsl_have_eval
 #               a space)
 # Returns:   None
 # ----------------------------------------------------------------------------
-push = $(__gmsl_tr2)$(eval __gmsl_stack_$1 := $2 $(__gmsl_stack_$1))
+push = $(__gmsl_tr2)$(eval __gmsl_stack_$1 := $2 $(if $(filter-out undefined,\
+    $(origin __gmsl_stack_$1)),$(__gmsl_stack_$1)))
 
 # ----------------------------------------------------------------------------
 # Function:  pop
 # Arguments: 1: Name of stack
 # Returns:   Top element from the stack after removing it
 # ----------------------------------------------------------------------------
-pop = $(__gmsl_tr1)$(call first,$(__gmsl_stack_$1))                  \
-          $(eval __gmsl_stack_$1 := $(call rest,$(__gmsl_stack_$1)))
+pop = $(__gmsl_tr1)$(if $(filter-out undefined,$(origin __gmsl_stack_$1)), \
+    $(call first,$(__gmsl_stack_$1))                                       \
+    $(eval __gmsl_stack_$1 := $(call rest,$(__gmsl_stack_$1))))
 
 # ----------------------------------------------------------------------------
 # Function:  peek
