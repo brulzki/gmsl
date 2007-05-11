@@ -358,6 +358,13 @@ __gmsl_characters += 0 1 2 3 4 5 6 7 8 9
 __gmsl_characters += ` ~ ! @ \# $$ % ^ & * ( ) - _ = +
 __gmsl_characters += { } [ ] \ : ; ' " < > , . / ? |
 
+# Aside: if you read the above you might think that the lower-case
+# letter x is missing, and that that's an error.  It is missing, but
+# it's not an error.  __gmsl_characters is used by the strlen
+# function.  strlen works by transforming every character and space
+# into the letter x and then counting the x's.  Since there's no need
+# to transform x into x I omitted it.
+
 # This results in __gmsl_space containing just a space
 
 __gmsl_space := 
