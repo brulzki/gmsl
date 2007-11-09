@@ -42,7 +42,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 8
+gmsl_version := 1 0 9
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -100,7 +100,7 @@ endif
 # Returns:   $(true) if this version of the library is compatible
 #            with the requested version number, otherwise $(false)
 # ----------------------------------------------------------------------------
-gmsl_compatible =                                                         \
+gmsl_compatible = $(strip                                                 \
     $(if $(call gt,$(word 1,$1),$(word 1,$(gmsl_version))),               \
         $(false),                                                         \
         $(if $(call lt,$(word 1,$1),$(word 1,$(gmsl_version))),           \
@@ -109,7 +109,7 @@ gmsl_compatible =                                                         \
                 $(false),                                                 \
                 $(if $(call lt,$(word 2,$1),$(word 2,$(gmsl_version))),   \
                     $(true),                                              \
-                    $(call lte,$(word 3,$1),$(word 3,$(gmsl_version)))))))
+                    $(call lte,$(word 3,$1),$(word 3,$(gmsl_version))))))))
 
 # ###########################################################################
 # LOGICAL OPERATORS
@@ -214,8 +214,8 @@ map = $(__gmsl_tr2)$(strip $(foreach a,$2,$(call $1,$a)))
 #            3: Second list to iterate over calling the function in 1
 # Returns:   The list after calling the function on each pair of elements
 # ----------------------------------------------------------------------------
-pairmap = $(__gmsl_tr3)\
-          $(strip $(if $2$3,$(call $1,$(call first,$2),$(call first,$3))     \
+pairmap = $(strip $(__gmsl_tr3)\
+          $(if $2$3,$(call $1,$(call first,$2),$(call first,$3))     \
                         $(call pairmap,$1,$(call rest,$2),$(call rest,$3))))
 
 # ----------------------------------------------------------------------------
@@ -248,14 +248,16 @@ lne = $(__gmsl_tr2)$(call not,$(call leq,$1,$2))
 # Arguments: 1: A list to reverse
 # Returns:   The list with its elements in reverse order
 # ----------------------------------------------------------------------------
-reverse =$(__gmsl_tr1)$(if $1,$(call reverse,$(call rest,$1)) $(call first,$1))
+reverse =$(__gmsl_tr1)$(strip $(if $1,$(call reverse,$(call rest,$1)) \
+                        $(call first,$1)))
 
 # ----------------------------------------------------------------------------
 # Function:  uniq
 # Arguments: 1: A list from which to remove repeated elements
 # Returns:   The list with duplicate elements removed without reordering
 # ----------------------------------------------------------------------------
-uniq = $(__gmsl_tr1)$(if $1,$(call uniq,$(call chop,$1)) $(if $(filter $(call last,$1),$(call chop,$1)),,$(call last,$1)))
+uniq = $(strip $(__gmsl_tr1)$(if $1,$(call uniq,$(call chop,$1)) \
+            $(if $(filter $(call last,$1),$(call chop,$1)),,$(call last,$1))))
 
 # ----------------------------------------------------------------------------
 # Function:  length
@@ -371,6 +373,28 @@ __gmsl_space :=
 __gmsl_space +=
 
 strlen = $(strip $(eval __temp := $(subst $(__gmsl_space),x,$1))$(foreach a,$(__gmsl_characters),$(eval __temp := $$(subst $$a,x,$(__temp))))$(eval __temp := $(subst x,x ,$(__temp)))$(words $(__temp)))
+
+# This results in __gmsl_newline containing just a newline
+
+define __gmsl_newline
+
+
+endef
+
+# This results in __gmsl_tab containing a tab
+
+__gmsl_tab :=	#
+
+# ----------------------------------------------------------------------------
+# Function:  substr
+# Arguments: 1: A string
+# 	     2: Start position (first character is 1)
+#	     3: End position (inclusive)
+# Returns:   A substring.  
+# Note:      The string in $1 must not contain a §
+# ----------------------------------------------------------------------------
+
+substr = $(strip $(eval __temp := $$(subst $$(__gmsl_space),§ ,$$1))$(foreach a,$(__gmsl_characters),$(eval __temp := $$(subst $$a,$$a$$(__gmsl_space),$(__temp))))$(eval __temp := $(wordlist $2,$3,$(__temp))))$(subst §,$(__gmsl_space),$(subst $(__gmsl_space),,$(__temp)))
 
 endif # __gmsl_have_eval
 
@@ -505,7 +529,7 @@ __gmsl_int_wrap2 = $(call $1,$(call int_encode,$2),$(call int_encode,$3))
 #            2: Another number in x's represntation
 # Returns:   Returns the sum of the two numbers in x's representation
 # ----------------------------------------------------------------------------
-int_plus = $(__gmsl_tr2)$1 $2
+int_plus = $(strip $(__gmsl_tr2)$1 $2)
 
 # ----------------------------------------------------------------------------
 # Function:  plus (wrapped version of int_plus)
@@ -522,9 +546,9 @@ plus = $(__gmsl_tr2)$(call __gmsl_int_wrap,int_plus,$1,$2)
 # Returns:   Returns the difference of the two numbers in x's representation,
 #            or outputs an error on a numeric underflow
 # ----------------------------------------------------------------------------
-int_subtract = $(__gmsl_tr2)$(if $(call int_gte,$1,$2),       \
-                $(filter-out xx,$(join $1,$2)),               \
-                $(call __gmsl_warning,Subtraction underflow))
+int_subtract = $(strip $(__gmsl_tr2)$(if $(call int_gte,$1,$2), \
+                $(filter-out xx,$(join $1,$2)),                 \
+                $(call __gmsl_warning,Subtraction underflow)))
 
 # ----------------------------------------------------------------------------
 # Function:  subtract (wrapped version of int_subtract)
@@ -541,7 +565,7 @@ subtract = $(__gmsl_tr2)$(call __gmsl_int_wrap,int_subtract,$1,$2)
 #            2: Another number in x's represntation
 # Returns:   Returns the product of the two numbers in x's representation
 # ----------------------------------------------------------------------------
-int_multiply = $(__gmsl_tr2)$(foreach a,$1,$2)
+int_multiply = $(strip $(__gmsl_tr2)$(foreach a,$1,$2))
 
 # ----------------------------------------------------------------------------
 # Function:  multiply (wrapped version of int_multiply)
@@ -558,10 +582,10 @@ multiply = $(__gmsl_tr2)$(call __gmsl_int_wrap,int_multiply,$1,$2)
 # Returns:   Returns the result of integer division of argument 1 divided
 #            by argument 2 in x's representation
 # ----------------------------------------------------------------------------
-int_divide = $(__gmsl_tr2)$(if $2,                                         \
+int_divide = $(__gmsl_tr2)$(strip $(if $2,                                 \
                  $(if $(call int_gte,$1,$2),                               \
                      x $(call int_divide,$(call int_subtract,$1,$2),$2),), \
-                 $(call __gmsl_error,Division by zero))
+                 $(call __gmsl_error,Division by zero)))
 
 # ----------------------------------------------------------------------------
 # Function:  divide (wrapped version of int_divide)
@@ -645,7 +669,7 @@ ne = $(__gmsl_tr2)$(call __gmsl_int_wrap2,int_ne,$1,$2)
 # Arguments: 1: A number in x's representation
 # Returns:   The number incremented by 1 in x's representation
 # ----------------------------------------------------------------------------
-int_inc = $(__gmsl_tr1)$1 x
+int_inc = $(strip $(__gmsl_tr1)$1 x)
 
 # ----------------------------------------------------------------------------
 # Function:  inc
@@ -677,7 +701,7 @@ dec = $(__gmsl_tr1)$(call __gmsl_int_wrap1,int_dec,$1)
 # Arguments: 1: A number in x's representation
 # Returns:   The number doubled (i.e. * 2) and returned in x's representation
 # ----------------------------------------------------------------------------
-int_double = $(__gmsl_tr1)$1 $1
+int_double = $(strip $(__gmsl_tr1)$1 $1)
 
 # ----------------------------------------------------------------------------
 # Function:  double
@@ -721,8 +745,8 @@ set = $(__gmsl_tr3)$(eval __gmsl_aa_$1_$2 = $3)
 #            2: The key to retrieve
 # Returns:   The value stored in the array for that key
 # ----------------------------------------------------------------------------
-get = $(__gmsl_tr2)$(if $(filter-out undefined,$(origin __gmsl_aa_$1_$2)), \
-    $(__gmsl_aa_$1_$2))
+get = $(strip $(__gmsl_tr2)$(if $(filter-out undefined,$(origin __gmsl_aa_$1_$2)), \
+    $(__gmsl_aa_$1_$2)))
 
 # ----------------------------------------------------------------------------
 # Function:  keys
@@ -762,9 +786,9 @@ push = $(__gmsl_tr2)$(eval __gmsl_stack_$1 := $2 $(if $(filter-out undefined,\
 # Arguments: 1: Name of stack
 # Returns:   Top element from the stack after removing it
 # ----------------------------------------------------------------------------
-pop = $(__gmsl_tr1)$(if $(filter-out undefined,$(origin __gmsl_stack_$1)), \
+pop = $(__gmsl_tr1)$(strip $(if $(filter-out undefined,$(origin __gmsl_stack_$1)), \
     $(call first,$(__gmsl_stack_$1))                                       \
-    $(eval __gmsl_stack_$1 := $(call rest,$(__gmsl_stack_$1))))
+    $(eval __gmsl_stack_$1 := $(call rest,$(__gmsl_stack_$1)))))
 
 # ----------------------------------------------------------------------------
 # Function:  peek

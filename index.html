@@ -23,7 +23,7 @@ you have the right version of <span style="font-family: monospace;">gmsl</span>
 use the <span style="font-family: monospace;">gmsl_compatible</span>
 function (see
 below). The current version is <span style="font-family: monospace;">1
-0 8</span>.<br>
+0 9</span>.<br>
 <br>
 The GMSL package also includes a test suite for GMSL.&nbsp; Just run <span style="font-family: monospace;">make -f gmsl-tests</span>.<br>
 <h2>Logical Operators</h2>GMSL has boolean $(true) (a non-empty string)
@@ -165,6 +165,12 @@ the same<br>
 <br>
 <span style="font-family: monospace;">Arguments: 1: A string<br>
 Returns:&nbsp;&nbsp;&nbsp;Returns the length of the string<br>
+</span>
+<hr><b>substr</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2: Start offset (first character is 1)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3: Ending offset (inclusive)<br>Returns:&nbsp;&nbsp;&nbsp;Returns a substring<br>
 </span>
 <hr><b>split</b><br>
 <br>
