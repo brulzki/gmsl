@@ -66,6 +66,7 @@ __gmsl_included := $(true)
 # include /foo/gmsl then extract the /foo/ so that __gmsl gets
 # included transparently
 
+ifneq ($(MAKEFILE_LIST),)
 __gmsl_root := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 
 # If there are any spaces in the path in __gmsl_root then give up
@@ -77,6 +78,12 @@ __gmsl_root :=
 endif
 
 include $(__gmsl_root)__gmsl
+
+else
+
+include __gmsl
+
+endif
 
 endif # __gmsl_included
 

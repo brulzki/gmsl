@@ -91,7 +91,7 @@ __gmsl_have_and := $(if $(filter-out undefined, \
     $(origin and)),$(call and,$(true),$(true)))
 
 ifneq ($(__gmsl_have_eval),$(true))
-$(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$(eval): some functions disabled)
+$(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$$$(eval): some functions disabled)
 endif
 
 # ----------------------------------------------------------------------------
