@@ -91,7 +91,7 @@ __gmsl_have_and := $(if $(filter-out undefined, \
     $(origin and)),$(call and,$(true),$(true)))
 
 ifneq ($(__gmsl_have_eval),$(true))
-$(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$$$(eval): some functions disabled)
+$(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$t$$(eval): some functions disabled)
 endif
 
 # ----------------------------------------------------------------------------
@@ -319,7 +319,8 @@ ifdef __gmsl_have_eval
 #            3: The text to translate
 # Returns:   Returns the text after translating characters
 # ----------------------------------------------------------------------------
-tr = $(__gmsl_tr3)$(strip $(eval __gmsl_t := $3)                          \
+tr = $(strip $(__gmsl_tr3)$(call assert_no_dollar,$0,$1$2$3)              \
+     $(eval __gmsl_t := $3)                                               \
      $(foreach c,                                                         \
          $(join $(addsuffix :,$1),$2),                                    \
          $(eval __gmsl_t :=                                               \
@@ -340,14 +341,14 @@ tr = $(__gmsl_tr3)$(strip $(eval __gmsl_t := $3)                          \
 # Arguments: 1: Text to upper case
 # Returns:   Returns the text in upper case
 # ----------------------------------------------------------------------------
-uc = $(__gmsl_tr1)$(call tr,$([a-z]),$([A-Z]),$1)
+uc = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(call tr,$([a-z]),$([A-Z]),$1)
 
 # ----------------------------------------------------------------------------
 # Function:  lc
 # Arguments: 1: Text to lower case
 # Returns:   Returns the text in lower case
 # ----------------------------------------------------------------------------
-lc = $(__gmsl_tr1)$(call tr,$([A-Z]),$([a-z]),$1)
+lc = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(call tr,$([A-Z]),$([a-z]),$1)
 
 # ----------------------------------------------------------------------------
 # Function:  strlen
@@ -372,7 +373,7 @@ __gmsl_characters += { } [ ] \ : ; ' " < > , . / ? |
 __gmsl_space := 
 __gmsl_space +=
 
-strlen = $(strip $(eval __temp := $(subst $(__gmsl_space),x,$1))$(foreach a,$(__gmsl_characters),$(eval __temp := $$(subst $$a,x,$(__temp))))$(eval __temp := $(subst x,x ,$(__temp)))$(words $(__temp)))
+strlen = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(strip $(eval __temp := $(subst $(__gmsl_space),x,$1))$(foreach a,$(__gmsl_characters),$(eval __temp := $$(subst $$a,x,$(__temp))))$(eval __temp := $(subst x,x ,$(__temp)))$(words $(__temp)))
 
 # This results in __gmsl_newline containing just a newline
 
@@ -394,7 +395,7 @@ __gmsl_tab :=	#
 # Note:      The string in $1 must not contain a §
 # ----------------------------------------------------------------------------
 
-substr = $(strip $(eval __temp := $$(subst $$(__gmsl_space),§ ,$$1))$(foreach a,$(__gmsl_characters),$(eval __temp := $$(subst $$a,$$a$$(__gmsl_space),$(__temp))))$(eval __temp := $(wordlist $2,$3,$(__temp))))$(subst §,$(__gmsl_space),$(subst $(__gmsl_space),,$(__temp)))
+substr = $(__gmsl_tr3)$(call assert_no_dollar,$0,$1$2$3)$(strip $(eval __temp := $$(subst $$(__gmsl_space),§ ,$$1))$(foreach a,$(__gmsl_characters),$(eval __temp := $$(subst $$a,$$a$$(__gmsl_space),$(__temp))))$(eval __temp := $(wordlist $2,$3,$(__temp))))$(subst §,$(__gmsl_space),$(subst $(__gmsl_space),,$(__temp)))
 
 endif # __gmsl_have_eval
 
@@ -438,7 +439,7 @@ set_remove = $(__gmsl_tr2)$(filter-out $1,$2)
 #            2: A set
 # Returns:   Returns $(true) if the element is in the set
 # ----------------------------------------------------------------------------
-set_is_member = $(if $(filter $1,$2),$(true),$(false))
+set_is_member = $(__gmsl_tr2)$(if $(filter $1,$2),$(true),$(false))
 
 # ----------------------------------------------------------------------------
 # Function:  set_union
@@ -446,7 +447,7 @@ set_is_member = $(if $(filter $1,$2),$(true),$(false))
 #            2: Another set
 # Returns:   Returns the union of the two sets
 # ----------------------------------------------------------------------------
-set_union = $(sort $1 $2)
+set_union = $(__gmsl_tr2)$(sort $1 $2)
 
 # ----------------------------------------------------------------------------
 # Function:  set_intersection
@@ -454,7 +455,7 @@ set_union = $(sort $1 $2)
 #            2: Another set
 # Returns:   Returns the intersection of the two sets
 # ----------------------------------------------------------------------------
-set_intersection = $(filter $1,$2)
+set_intersection = $(__gmsl_tr2)$(filter $1,$2)
 
 # ----------------------------------------------------------------------------
 # Function:  set_is_subset
@@ -462,7 +463,7 @@ set_intersection = $(filter $1,$2)
 #            2: Another set
 # Returns:   Returns $(true) if the first set is a subset of the second
 # ----------------------------------------------------------------------------
-set_is_subset = $(call set_equal,$(call set_intersection,$1,$2),$1)
+set_is_subset = $(__gmsl_tr2)$(call set_equal,$(call set_intersection,$1,$2),$1)
 
 # ----------------------------------------------------------------------------
 # Function:  set_equal
@@ -470,7 +471,7 @@ set_is_subset = $(call set_equal,$(call set_intersection,$1,$2),$1)
 #            2: Another set
 # Returns:   Returns $(true) if the two sets are identical
 # ----------------------------------------------------------------------------
-set_equal = $(call seq,$1,$2)
+set_equal = $(__gmsl_tr2)$(call seq,$1,$2)
 
 # ###########################################################################
 # ARITHMETIC LIBRARY
@@ -737,7 +738,7 @@ ifdef __gmsl_have_eval
 #            3: The value associated with the key
 # Returns:   None
 # ----------------------------------------------------------------------------
-set = $(__gmsl_tr3)$(eval __gmsl_aa_$1_$2 = $3)
+set = $(__gmsl_tr3)$(call assert_no_dollar,$0,$1$2$3)$(eval __gmsl_aa_$1_$2 = $3)
 
 # ----------------------------------------------------------------------------
 # Function:  get
@@ -745,7 +746,7 @@ set = $(__gmsl_tr3)$(eval __gmsl_aa_$1_$2 = $3)
 #            2: The key to retrieve
 # Returns:   The value stored in the array for that key
 # ----------------------------------------------------------------------------
-get = $(strip $(__gmsl_tr2)$(if $(filter-out undefined,$(origin __gmsl_aa_$1_$2)), \
+get = $(strip $(__gmsl_tr2)$(call assert_no_dollar,$0,$1$2)$(if $(filter-out undefined,$(origin __gmsl_aa_$1_$2)), \
     $(__gmsl_aa_$1_$2)))
 
 # ----------------------------------------------------------------------------
@@ -753,7 +754,7 @@ get = $(strip $(__gmsl_tr2)$(if $(filter-out undefined,$(origin __gmsl_aa_$1_$2)
 # Arguments: 1: Name of associative array
 # Returns:   Returns a list of all defined keys in the array
 # ----------------------------------------------------------------------------
-keys = $(__gmsl_tr1)$(sort $(patsubst __gmsl_aa_$1_%,%, \
+keys = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(sort $(patsubst __gmsl_aa_$1_%,%, \
                   $(filter __gmsl_aa_$1_%,$(.VARIABLES))))
 
 # ----------------------------------------------------------------------------
@@ -762,7 +763,7 @@ keys = $(__gmsl_tr1)$(sort $(patsubst __gmsl_aa_$1_%,%, \
 #            2: The key to test
 # Returns:   Returns true if the key is defined (i.e. not empty)
 # ----------------------------------------------------------------------------
-defined = $(__gmsl_tr2)$(call sne,$(call get,$1,$2),)
+defined = $(__gmsl_tr2)$(call assert_no_dollar,$0,$1$2)$(call sne,$(call get,$1,$2),)
 
 endif # __gmsl_have_eval
 
@@ -778,7 +779,7 @@ ifdef __gmsl_have_eval
 #               a space)
 # Returns:   None
 # ----------------------------------------------------------------------------
-push = $(__gmsl_tr2)$(eval __gmsl_stack_$1 := $2 $(if $(filter-out undefined,\
+push = $(__gmsl_tr2)$(call assert_no_dollar,$0,$1$2)$(eval __gmsl_stack_$1 := $2 $(if $(filter-out undefined,\
     $(origin __gmsl_stack_$1)),$(__gmsl_stack_$1)))
 
 # ----------------------------------------------------------------------------
@@ -786,7 +787,7 @@ push = $(__gmsl_tr2)$(eval __gmsl_stack_$1 := $2 $(if $(filter-out undefined,\
 # Arguments: 1: Name of stack
 # Returns:   Top element from the stack after removing it
 # ----------------------------------------------------------------------------
-pop = $(__gmsl_tr1)$(strip $(if $(filter-out undefined,$(origin __gmsl_stack_$1)), \
+pop = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(strip $(if $(filter-out undefined,$(origin __gmsl_stack_$1)), \
     $(call first,$(__gmsl_stack_$1))                                       \
     $(eval __gmsl_stack_$1 := $(call rest,$(__gmsl_stack_$1)))))
 
@@ -795,14 +796,14 @@ pop = $(__gmsl_tr1)$(strip $(if $(filter-out undefined,$(origin __gmsl_stack_$1)
 # Arguments: 1: Name of stack
 # Returns:   Top element from the stack without removing it
 # ----------------------------------------------------------------------------
-peek = $(__gmsl_tr1)$(call first,$(__gmsl_stack_$1))
+peek = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(call first,$(__gmsl_stack_$1))
 
 # ----------------------------------------------------------------------------
 # Function:  depth
 # Arguments: 1: Name of stack
 # Returns:   Number of items on the stack
 # ----------------------------------------------------------------------------
-depth = $(__gmsl_tr1)$(words $(__gmsl_stack_$1))
+depth = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(words $(__gmsl_stack_$1))
 
 endif # __gmsl_have_eval
 
@@ -835,3 +836,11 @@ assert = $(if $1,,$(call __gmsl_error,Assertion failure: $2))
 # Returns:   None
 # ----------------------------------------------------------------------------
 assert_exists = $(call assert,$(wildcard $1),file '$1' missing)
+
+# ----------------------------------------------------------------------------
+# Function:  assert_no_dollar
+# Arguments: 1: Name of a function being executd
+#            2: Arguments to check
+# Returns:   None
+# ----------------------------------------------------------------------------
+assert_no_dollar = $(call assert,$(call not,$(findstring $$,$2)),$1 called with a dollar sign in argument)
