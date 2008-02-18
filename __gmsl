@@ -91,7 +91,7 @@ __gmsl_have_and := $(if $(filter-out undefined, \
     $(origin and)),$(call and,$(true),$(true)))
 
 ifneq ($(__gmsl_have_eval),$(true))
-$(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$t$$(eval): some functions disabled)
+$(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$$$(eval): some functions disabled)
 endif
 
 # ----------------------------------------------------------------------------
@@ -356,7 +356,7 @@ lc = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(call tr,$([A-Z]),$([a-z]),$1)
 # Returns:   Returns the length of the string
 # ----------------------------------------------------------------------------
 __gmsl_characters := A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-__gmsl_characters += a b c d e f g h i j k l m n o p q r s t u v w y z
+__gmsl_characters += a b c d e f g h i j k l m n o p q r s t u v w x y z
 __gmsl_characters += 0 1 2 3 4 5 6 7 8 9
 __gmsl_characters += ` ~ ! @ \# $$ % ^ & * ( ) - _ = +
 __gmsl_characters += { } [ ] \ : ; ' " < > , . / ? |
