@@ -42,7 +42,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 9
+gmsl_version := 1 0 11
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -78,6 +78,14 @@ endif
 
 __gmsl_have_eval := $(false)
 __gmsl_ignore := $(eval __gmsl_have_eval := $(true))
+
+# If this is being run with Electric Cloud's emake then warn that
+# their $(eval) support is incomplete.
+
+ifdef ECLOUD_BUILD_ID
+$(warning You are using Electric Cloud's emake which has incomplete $$(eval) support)
+__gmsl_have_eval := $(false)
+endif
 
 # See if we have $(lastword) (GNU Make 3.81 and above)
 
