@@ -5,7 +5,7 @@
 # A library of functions to be used with GNU Make's $(call) that
 # provides functionality not available in standard GNU Make.
 #
-# Copyright (c) 2005-2010 John Graham-Cumming
+# Copyright (c) 2005-2012 John Graham-Cumming
 #
 # This file is part of GMSL
 #
@@ -42,7 +42,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 0 12
+gmsl_version := 1 0 13
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -266,8 +266,8 @@ reverse =$(__gmsl_tr1)$(strip $(if $1,$(call reverse,$(call rest,$1)) \
 # Arguments: 1: A list from which to remove repeated elements
 # Returns:   The list with duplicate elements removed without reordering
 # ----------------------------------------------------------------------------
-uniq = $(strip $(__gmsl_tr1)$(if $1,$(call uniq,$(call chop,$1)) \
-            $(if $(filter $(call last,$1),$(call chop,$1)),,$(call last,$1))))
+uniq = $(strip $(__gmsl_tr1) $(if $1,$(firstword $1) \
+                               $(call uniq,$(filter-out $(firstword $1),$1))))
 
 # ----------------------------------------------------------------------------
 # Function:  length
