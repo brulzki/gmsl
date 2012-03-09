@@ -11,5 +11,8 @@ test:
 
 .PHONY: upload
 upload:
-	@scp index.html jgrahamc@gmsl.sf.net:/home/groups/g/gm/gmsl/htdocs
+	@echo "cd /home/project-web/gmsl/htdocs" > gmsl_sftp_batch
+	@echo "put index.html" >> gmsl_sftp_batch
+	@sftp -b gmsl_sftp_batch jgrahamc@web.sf.net
+	@rm gmsl_sftp_batch
 
