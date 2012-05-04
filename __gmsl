@@ -292,7 +292,7 @@ __gmsl_make_bool = $(if $(strip $1),$(true),$(false))
 #            2: ...this string
 # Returns:   Returns $(true) if the two strings are identical
 # ----------------------------------------------------------------------------
-seq = $(__gmsl_tr2)$(if $1,$(if $2,$(if $(filter-out xx,x$(subst $1,,$2)$(subst $2,,$1)x),$(false),$(true)),$(call not,$(call __gmsl_make_bool,$1))),$(call not,$(call __gmsl_make_bool,$2)))
+seq = $(__gmsl_tr2)$(if $(subst x$1,,x$2)$(subst x$2,,x$1),$(false),$(true))
 
 # ----------------------------------------------------------------------------
 # Function:  sne
@@ -371,13 +371,6 @@ __gmsl_characters += a b c d e f g h i j k l m n o p q r s t u v w x y z
 __gmsl_characters += 0 1 2 3 4 5 6 7 8 9
 __gmsl_characters += ` ~ ! @ \# $$ % ^ & * ( ) - _ = +
 __gmsl_characters += { } [ ] \ : ; ' " < > , . / ? |
-
-# Aside: if you read the above you might think that the lower-case
-# letter x is missing, and that that's an error.  It is missing, but
-# it's not an error.  __gmsl_characters is used by the strlen
-# function.  strlen works by transforming every character and space
-# into the letter x and then counting the x's.  Since there's no need
-# to transform x into x I omitted it.
 
 # This results in __gmsl_space containing just a space
 
