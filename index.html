@@ -497,7 +497,7 @@ array<br>
 value to associate<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3: The
 value associated with the key<br>
-Returns:&nbsp;&nbsp;&nbsp;None<br>
+Returns:&nbsp;&nbsp;&nbsp;The value being set<br>
 </span>
 <hr><b>get</b><br>
 <br>
@@ -550,6 +550,17 @@ Returns:&nbsp;&nbsp;&nbsp;Top element from the stack without removing it<br>
 <span style="font-family: monospace;">Arguments: 1: Name of stack<br>
 Returns:&nbsp;&nbsp;&nbsp;Number of items on the stack<br>
 </span>
+<hr style="width: 100%; height: 2px;"><span style="font-family: monospace;"></span>
+<h2>Function memoization</h2>
+To reduce the number of calls to slow functions (such as $(shell) a single memoization function is provided.<br>
+<br>
+<hr style="width: 100%; height: 2px;"><b>memoize</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: Name of function to memoize<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2: String argument for the function<br>
+Returns:&nbsp;&nbsp;&nbsp;Result of $1 applied to $2 but only calls $1 once for each unique $2<br>
+</span>
+
 <hr style="width: 100%; height: 2px;"><span style="font-family: monospace;"></span>
 <h2>Miscellaneous and Debugging Facilities</h2>
 GMSL defines the following constants; all are accessed as normal GNU

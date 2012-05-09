@@ -42,7 +42,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 1 0
+gmsl_version := 1 1 1
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -744,9 +744,9 @@ __gmsl_aa_magic := faf192c8efbc25c27992c5bc5add390393d583c6
 # Arguments: 1: Name of associative array
 #            2: The key value to associate
 #            3: The value associated with the key
-# Returns:   None
+# Returns:   The value being set
 # ----------------------------------------------------------------------------
-set = $(__gmsl_tr3)$(call assert_no_dollar,$0,$1$2$3)$(eval __gmsl_aa_$1_$(__gmsl_aa_magic)_$2_gmsl_aa_$1 = $3)
+set = $(__gmsl_tr3)$(call assert_no_dollar,$0,$1$2$3)$(eval __gmsl_aa_$1_$(__gmsl_aa_magic)_$2_gmsl_aa_$1 = $3)$3
 
 # ----------------------------------------------------------------------------
 # Function:  get
@@ -811,6 +811,29 @@ peek = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(call first,$(__gmsl_stack_$1
 # Returns:   Number of items on the stack
 # ----------------------------------------------------------------------------
 depth = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(words $(__gmsl_stack_$1))
+
+endif # __gmsl_have_eval
+
+ifdef __gmsl_have_eval
+# ###########################################################################
+# STRING CACHE
+# ###########################################################################
+
+# ----------------------------------------------------------------------------
+# Function:  memoize
+# Arguments: 1. Name of the function to be called if the string
+#               has not been previously seen
+#            2. A string
+# Returns:   Returns the result of a memo function (which the user must
+#            define) on the passed in string and remembers the result.
+#
+# Example:   Set memo = $(shell echo "$1" | md5sum) to make a cache
+#            of MD5 hashes of strings. $(call memoize,memo,foo bar baz)
+# ----------------------------------------------------------------------------
+__gmsl_memoize = $1cc2af1bb7c4482f2ba75e338b963d3e7$2
+memoize = $(__gmsl_tr2)$(strip $(if $(call defined,__gmsl_m,$(__gmsl_memoize)),\
+                  $(call get,__gmsl_m,$(__gmsl_memoize)),                      \
+				  $(call set,__gmsl_m,$(__gmsl_memoize),$(call $1,$2))))
 
 endif # __gmsl_have_eval
 
