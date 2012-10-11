@@ -42,7 +42,7 @@
 # This is the GNU Make Standard Library version number as a list with
 # three items: major, minor, revision
 
-gmsl_version := 1 1 1
+gmsl_version := 1 1 2
 
 # Used to output warnings and error from the library, it's possible to
 # disable any warnings or errors by overriding these definitions
@@ -80,11 +80,16 @@ __gmsl_have_eval := $(false)
 __gmsl_ignore := $(eval __gmsl_have_eval := $(true))
 
 # If this is being run with Electric Cloud's emake then warn that
-# their $(eval) support is incomplete.
+# their $(eval) support is incomplete in 1.x, 2.x, 3.x, 4.x and 5.0,
+# 5.1, 5.2 and 5.3
 
 ifdef ECLOUD_BUILD_ID
-$(warning You are using Electric Cloud's emake which has incomplete $$(eval) support)
+__gmsl_emake_major := $(word 1,$(subst ., ,$(EMAKE_VERSION)))
+__gmsl_emake_minor := $(word 2,$(subst ., ,$(EMAKE_VERSION)))
+ifneq ("$(findstring $(__gmsl_emake_major),1 2 3 4)$(findstring $(__gmsl_emake_major)$(__gmsl_emake_minor),50 51 52 53)","")
+$(warning You are using a version of Electric Cloud's emake which has incomplete $$(eval) support)
 __gmsl_have_eval := $(false)
+endif
 endif
 
 # See if we have $(lastword) (GNU Make 3.81 and above)
@@ -99,7 +104,7 @@ __gmsl_have_and := $(if $(filter-out undefined, \
     $(origin and)),$(call and,$(true),$(true)))
 
 ifneq ($(__gmsl_have_eval),$(true))
-$(call __gmsl_warning,GNU Make $(MAKE_VERSION) does not support $$$$(eval): some functions disabled)
+$(call __gmsl_warning,Your make version $(MAKE_VERSION) does not support $$$$(eval): some functions disabled)
 endif
 
 __gmsl_dollar := $$

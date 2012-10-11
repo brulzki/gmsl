@@ -661,7 +661,16 @@ $(call test_assert,$(call int_decode,$(memo_counter)),3)
 $(call test_assert,$(call memoize,memo,john),john)
 $(call test_assert,$(call int_decode,$(memo_counter)),3)
 md5_counter = $(call int_encode,0)
-md5 = $(eval md5_counter = $(call int_inc,$(md5_counter)))$(firstword $(shell echo "$1" | md5sum))
+ifneq ("$(shell echo -n hello | md5sum 2> /dev/null)","")
+md5_program := md5sum
+endif
+ifneq ("$(shell md5 -s hello 2> /dev/null)","")
+md5_program := md5
+endif
+ifeq ("$(md5_program)","") 
+$(error Can't find suitable MD5 program. Tried md5sum and md5)
+endif
+md5 = $(eval md5_counter = $(call int_inc,$(md5_counter)))$(firstword $(shell echo "$1" | $(md5_program)))
 $(call test_assert,$(call memoize,md5,hello john),2d62190b10246ee2f2e233f9df840445)
 $(call test_assert,$(call int_decode,$(memo_counter)),3)
 $(call test_assert,$(call int_decode,$(md5_counter)),1)
@@ -691,7 +700,8 @@ $(call test_assert,$(call gmsl_compatible,1 0 12),$(true))
 $(call test_assert,$(call gmsl_compatible,1 0 13),$(true))
 $(call test_assert,$(call gmsl_compatible,1 1 0),$(true))
 $(call test_assert,$(call gmsl_compatible,1 1 1),$(true))
-$(call test_assert,$(call gmsl_compatible,1 1 2),)
+$(call test_assert,$(call gmsl_compatible,1 1 2),$(true))
+$(call test_assert,$(call gmsl_compatible,1 1 3),)
 $(call test_assert,$(call gmsl_compatible,1 2 0),)
 $(call test_assert,$(call gmsl_compatible,2 0 0),)
 $(call stop_test)
