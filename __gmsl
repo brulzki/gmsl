@@ -735,6 +735,15 @@ int_halve = $(__gmsl_tr1)$(strip $(subst xx,x,$(filter-out xy x y, \
 # ----------------------------------------------------------------------------
 halve = $(__gmsl_tr1)$(call __gmsl_int_wrap1,int_halve,$1)
 
+# ----------------------------------------------------------------------------
+# Function:  sequence
+# Arguments: 1: An integer
+#            2: An integer greater than argument 1
+# Returns:   The sequence [arg1, arg2] of integers
+# ----------------------------------------------------------------------------
+sequence = $(__gmsl_tr2)$(strip $(if $(call lte,$1,$2),$(if $(call seq,$1,$2),\
+	 $1,$1 $(call sequence,$(call inc,$1),$2))))
+
 ifdef __gmsl_have_eval
 # ###########################################################################
 # ASSOCIATIVE ARRAYS
