@@ -765,7 +765,7 @@ __gmsl_aa_magic := faf192c8efbc25c27992c5bc5add390393d583c6
 #            3: The value associated with the key
 # Returns:   Nothing
 # ----------------------------------------------------------------------------
-set = $(__gmsl_tr3)$(call assert_no_dollar,$0,$1$2$3)$(eval __gmsl_aa_$1_$(__gmsl_aa_magic)_$2_gmsl_aa_$1 := $3)
+set = $(__gmsl_tr3)$(call assert_no_space,$0,$1$2)$(call assert_no_dollar,$0,$1$2$3)$(eval __gmsl_aa_$1_$(__gmsl_aa_magic)_$2_gmsl_aa_$1 := $3)
 
 # Only used internally by memoize function
 
@@ -777,14 +777,14 @@ __gmsl_set = $(call set,$1,$2,$3)$3
 #            2: The key to retrieve
 # Returns:   The value stored in the array for that key
 # ----------------------------------------------------------------------------
-get = $(strip $(__gmsl_tr2)$(call assert_no_dollar,$0,$1$2)$(__gmsl_aa_$1_$(__gmsl_aa_magic)_$2_gmsl_aa_$1))
+get = $(strip $(__gmsl_tr2)$(call assert_no_space,$0,$1$2)$(call assert_no_dollar,$0,$1$2)$(__gmsl_aa_$1_$(__gmsl_aa_magic)_$2_gmsl_aa_$1))
 
 # ----------------------------------------------------------------------------
 # Function:  keys
 # Arguments: 1: Name of associative array
 # Returns:   Returns a list of all defined keys in the array
 # ----------------------------------------------------------------------------
-keys = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(sort $(patsubst __gmsl_aa_$1_$(__gmsl_aa_magic)_%_gmsl_aa_$1,%, \
+keys = $(__gmsl_tr1)$(call assert_no_space,$0,$1)$(call assert_no_dollar,$0,$1)$(sort $(patsubst __gmsl_aa_$1_$(__gmsl_aa_magic)_%_gmsl_aa_$1,%, \
                   $(filter __gmsl_aa_$1_$(__gmsl_aa_magic)_%_gmsl_aa_$1,$(.VARIABLES))))
 
 # ----------------------------------------------------------------------------
@@ -793,7 +793,7 @@ keys = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(sort $(patsubst __gmsl_aa_$1
 #            2: The key to test
 # Returns:   Returns true if the key is defined (i.e. not empty)
 # ----------------------------------------------------------------------------
-defined = $(__gmsl_tr2)$(call assert_no_dollar,$0,$1$2)$(call sne,$(call get,$1,$2),)
+defined = $(__gmsl_tr2)$(call assert_no_space,$0,$1$2)$(call assert_no_dollar,$0,$1$2)$(call sne,$(call get,$1,$2),)
 
 endif # __gmsl_have_eval
 
@@ -809,7 +809,7 @@ ifdef __gmsl_have_eval
 #               a space)
 # Returns:   None
 # ----------------------------------------------------------------------------
-push = $(__gmsl_tr2)$(call assert_no_dollar,$0,$1$2)$(eval __gmsl_stack_$1 := $2 $(if $(filter-out undefined,\
+push = $(__gmsl_tr2)$(call assert_no_space,$0,$1$2)$(call assert_no_dollar,$0,$1$2)$(eval __gmsl_stack_$1 := $2 $(if $(filter-out undefined,\
     $(origin __gmsl_stack_$1)),$(__gmsl_stack_$1)))
 
 # ----------------------------------------------------------------------------
@@ -817,7 +817,7 @@ push = $(__gmsl_tr2)$(call assert_no_dollar,$0,$1$2)$(eval __gmsl_stack_$1 := $2
 # Arguments: 1: Name of stack
 # Returns:   Top element from the stack after removing it
 # ----------------------------------------------------------------------------
-pop = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(strip $(if $(filter-out undefined,$(origin __gmsl_stack_$1)), \
+pop = $(__gmsl_tr1)$(call assert_no_space,$0,$1)$(call assert_no_dollar,$0,$1)$(strip $(if $(filter-out undefined,$(origin __gmsl_stack_$1)), \
     $(call first,$(__gmsl_stack_$1))                                       \
     $(eval __gmsl_stack_$1 := $(call rest,$(__gmsl_stack_$1)))))
 
@@ -826,14 +826,14 @@ pop = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(strip $(if $(filter-out undef
 # Arguments: 1: Name of stack
 # Returns:   Top element from the stack without removing it
 # ----------------------------------------------------------------------------
-peek = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(call first,$(__gmsl_stack_$1))
+peek = $(__gmsl_tr1)$(call assert_no_space,$0,$1)$(call assert_no_dollar,$0,$1)$(call first,$(__gmsl_stack_$1))
 
 # ----------------------------------------------------------------------------
 # Function:  depth
 # Arguments: 1: Name of stack
 # Returns:   Number of items on the stack
 # ----------------------------------------------------------------------------
-depth = $(__gmsl_tr1)$(call assert_no_dollar,$0,$1)$(words $(__gmsl_stack_$1))
+depth = $(__gmsl_tr1)$(call assert_no_space,$0,$1)$(call assert_no_dollar,$0,$1)$(words $(__gmsl_stack_$1))
 
 endif # __gmsl_have_eval
 
@@ -853,7 +853,7 @@ ifdef __gmsl_have_eval
 # Example:   Set memo = $(shell echo "$1" | md5sum) to make a cache
 #            of MD5 hashes of strings. $(call memoize,memo,foo bar baz)
 # ----------------------------------------------------------------------------
-__gmsl_memoize = $1cc2af1bb7c4482f2ba75e338b963d3e7$2
+__gmsl_memoize = $(subst $(__gmsl_space),§,$1)cc2af1bb7c4482f2ba75e338b963d3e7$(subst $(__gmsl_space),§,$2)
 memoize = $(__gmsl_tr2)$(strip $(if $(call defined,__gmsl_m,$(__gmsl_memoize)),\
                   $(call get,__gmsl_m,$(__gmsl_memoize)),                      \
                   $(call __gmsl_set,__gmsl_m,$(__gmsl_memoize),$(call $1,$2))))
@@ -896,4 +896,12 @@ assert_exists = $(call assert,$(wildcard $1),file '$1' missing)
 #            2: Arguments to check
 # Returns:   None
 # ----------------------------------------------------------------------------
-assert_no_dollar = $(call assert,$(call not,$(findstring $$,$2)),$1 called with a dollar sign in argument)
+assert_no_dollar = $(call __gmsl_tr2)$(call assert,$(call not,$(findstring $(__gmsl_dollar),$2)),$1 called with a dollar sign in argument)
+
+# ----------------------------------------------------------------------------
+# Function:  assert_no_space
+# Arguments: 1: Name of a function being executd
+#            2: Arguments to check
+# Returns:   None
+# ----------------------------------------------------------------------------
+assert_no_space = $(call assert,$(call not,$(findstring $(__gmsl_aa_magic),$(subst $(__gmsl_space),$(__gmsl_aa_magic),$2))),$1 called with a space in argument)

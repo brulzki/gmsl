@@ -4,7 +4,7 @@
 #
 # Test suite for the GMSL
 #
-# Copyright (c) 2005-2012 John Graham-Cumming
+# Copyright (c) 2005-2013 John Graham-Cumming
 #
 # This file is part of GMSL
 #
@@ -422,8 +422,6 @@ $(call test_assert,$(call set,foo,bar,baz/baz),)
 $(call test_assert,$(call get,foo,bar),baz/baz)
 $(call test-assert,$(call set,foo,bar-baz,baz),)
 $(call test_assert,$(call get,foo,bar-baz),baz)
-$(call test-assert,$(call set,foo,bar baz,baz),)
-$(call test_assert,$(call get,foo,bar baz),baz)
 $(call set,foo,bar-baz,baz)
 $(call set,foo,bar,baz/baz)
 $(call stop_test)
@@ -443,10 +441,6 @@ $(call test_assert,$(call depth,mystack),2)
 $(call test_assert,$(call pop,mystack),f2)
 $(call test_assert,$(call depth,mystack),1)
 $(call test_assert,$(call pop,myotherstack),)
-$(call test_assert,$(call push,my stack,e2))
-$(call push,my stack,e1)
-$(call test_assert,$(call pop,my stack),e1)
-$(call test_assert,$(call pop,my stack),e2)
 $(call stop_test)
 
 $(call start_test,reverse)
