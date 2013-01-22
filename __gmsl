@@ -738,11 +738,16 @@ halve = $(__gmsl_tr1)$(call __gmsl_int_wrap1,int_halve,$1)
 # ----------------------------------------------------------------------------
 # Function:  sequence
 # Arguments: 1: An integer
-#            2: An integer greater than argument 1
-# Returns:   The sequence [arg1, arg2] of integers
+#            2: An integer
+# Returns:   The sequence [arg1, arg2] of integers if arg1 < arg2 or
+#            [arg2, arg1] if arg2 > arg1. If arg1 == arg1 return [arg1]
 # ----------------------------------------------------------------------------
-sequence = $(__gmsl_tr2)$(strip $(if $(call lte,$1,$2),$(if $(call seq,$1,$2),\
-	 $1,$1 $(call sequence,$(call inc,$1),$2))))
+sequence = $(__gmsl_tr2)$(strip $(if $(call lte,$1,$2),          \
+         $(call __gmsl_sequence_up,$1,$2),                       \
+         $(call __gmsl_sequence_dn,$2,$1)))
+
+__gmsl_sequence_up = $(if $(call seq,$1,$2),$1,$1 $(call __gmsl_sequence_up,$(call inc,$1),$2))
+__gmsl_sequence_dn = $(if $(call seq,$1,$2),$1,$2 $(call __gmsl_sequence_dn,$1,$(call dec,$2)))
 
 ifdef __gmsl_have_eval
 # ###########################################################################
