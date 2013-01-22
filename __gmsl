@@ -72,6 +72,14 @@ __gmsl_tr2 :=
 __gmsl_tr3 :=
 endif
 
+# See if spaces are valid in variable names (this was the case until
+# GNU Make 3.82)
+ifeq ($(MAKE_VERSION),3.82)
+__gmsl_spaced_vars := $(false)
+else
+__gmsl_spaced_vars := $(true)
+endif
+
 # Figure out whether we have $(eval) or not (GNU Make 3.80 and above)
 # if we do not then output a warning message, if we do then some
 # functions will be enabled.
@@ -904,4 +912,8 @@ assert_no_dollar = $(call __gmsl_tr2)$(call assert,$(call not,$(findstring $(__g
 #            2: Arguments to check
 # Returns:   None
 # ----------------------------------------------------------------------------
+ifeq ($(__gmsl_spaced_vars),$(false))
 assert_no_space = $(call assert,$(call not,$(findstring $(__gmsl_aa_magic),$(subst $(__gmsl_space),$(__gmsl_aa_magic),$2))),$1 called with a space in argument)
+else
+assert_no_space =
+endif
