@@ -1,13 +1,23 @@
-.PHONY: package
-package: gmsl.tar.gz
+include gmsl
 
-gmsl.tar.gz: gmsl __gmsl gmsl-tests README index.html
+GMSL_VERSION := $(subst $(__gmsl_space),.,$(gmsl_version))
+PACKAGE := gmsl-$(GMSL_VERSION)
+TAR := $(PACKAGE).tar.gz
+.PHONY: package
+package: $(TAR)
+
+$(TAR): gmsl __gmsl gmsl-tests README index.html
 	@echo Making $@
-	@tar -c -z -f $@ $^
+	@rm -rf $(PACKAGE)
+	@mkdir $(PACKAGE)
+	@cp $^ $(PACKAGE)
+	@tar -c -z -f $@ $(PACKAGE)
+	@rm -rf $(PACKAGE)
 
 .PHONY: test
 test:
-	@$(MAKE) --warn-undefined-variables -f gmsl-tests
+	@$(MAKE) --no-print-directory -f gmsl-tests
+	@$(MAKE) --no-print-directory -f gmsl-tests EXPORT_ALL=1
 
 .PHONY: upload
 upload:
