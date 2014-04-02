@@ -21,8 +21,5 @@ test:
 
 .PHONY: upload
 upload:
-	@echo "cd /home/project-web/gmsl/htdocs" > gmsl_sftp_batch
-	@echo "put index.html" >> gmsl_sftp_batch
-	@sftp -b gmsl_sftp_batch jgrahamc@web.sf.net
-	@rm gmsl_sftp_batch
+	@scp index.html jgrahamc,gmsl@web.sf.net:/home/project-web/gmsl/htdocs
 
