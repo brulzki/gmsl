@@ -1,7 +1,5 @@
 include gmsl
 
-$(info $(call int_encode,01))
-
 GMSL_VERSION := $(subst $(__gmsl_space),.,$(gmsl_version))
 PACKAGE := gmsl-$(GMSL_VERSION)
 TAR := $(PACKAGE).tar.gz
