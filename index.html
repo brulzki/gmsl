@@ -22,7 +22,7 @@ include the GMSL in your Makefile do<br>
 you have the right version of <span style="font-family: monospace;">gmsl</span>
 use the <span style="font-family: monospace;">gmsl_compatible</span>
 function (see
-below). The current version is <span style="font-family: monospace;">1 1 6</span>.<br>
+below). The current version is <span style="font-family: monospace;">1 1 7</span>.<br>
 <br>
 The GMSL package also includes a test suite for GMSL.&nbsp; Just run <span style="font-family: monospace;">make -f gmsl-tests</span>.<br>
 <h2>Logical Operators</h2>GMSL has boolean $(true) (a non-empty string)
@@ -248,6 +248,13 @@ Returns:&nbsp;&nbsp;&nbsp;Returns the set with the element removed<br>
 <span style="font-family: monospace;">Arguments: 1: A single element<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2: A set<br>
 Returns:&nbsp;&nbsp;&nbsp;Returns $(true) if the element is in the set<br>
+</span>
+
+<hr><b>set_is_not_member</b><br>
+<br>
+<span style="font-family: monospace;">Arguments: 1: A single element<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2: A set<br>
+Returns:&nbsp;&nbsp;&nbsp;Returns $(false) if the element is in the set<br>
 </span>
 
 <hr><b>set_union</b><br>
